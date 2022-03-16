@@ -1,0 +1,78 @@
+<div class="calculator-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        <span> API Calculator</span>
+      </mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form>
+        <h3>To get started please select the tax percentage to apply and one of the amounts. The rest will be calculated for you.</h3>
+        <hr>
+        <h4>Tax to apply</h4>
+        <mat-form-field appearance="fill">
+          <mat-label>Choose one</mat-label>
+          <mat-select required>
+            <mat-option *ngFor="let tax of taxes" [value]="tax.value" (onSelectionChange)="taxUpdated($event, tax)">
+              {{tax.displayName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div *ngIf="
+        !selectedTax?.value
+        && ((net.valid && (net.dirty || net.touched))
+            || (vat.valid && (vat.dirty || vat.touched))
+            || (gross.valid && (gross.dirty || gross.touched)))">
+          <mat-error>
+            You must also select the tax you want to apply.
+          </mat-error>
+        </div>
+        <h4>Net amount</h4>
+        <mat-form-field appearance="fill">
+          <mat-label>Any positive number</mat-label>
+          <input matInput greaterThanZero placeholder="Ex. 20.00" [formControl]="net" type="number" (change)="netUpdated()">
+        </mat-form-field>
+        <div *ngIf="net.invalid && (net.dirty || net.touched)">
+          <mat-error *ngIf="net.errors?.['greaterThanZero']">
+            Amount must be a positive number.
+          </mat-error>
+        </div>
+
+        <h4>VAT amount</h4>
+        <mat-form-field appearance="fill">
+          <mat-label>Any positive number</mat-label>
+          <input matInput greaterThanZero placeholder="Ex. 4.00" [formControl]="vat" type="number" (change)="vatUpdated()">
+        </mat-form-field>
+        <div *ngIf="vat.invalid && (vat.dirty || vat.touched)">
+          <mat-error *ngIf="vat.errors?.['greaterThanZero']">
+            Amount must be a positive number.
+          </mat-error>
+        </div>
+
+        <h4>Gross amount</h4>
+        <mat-form-field appearance="fill">
+          <mat-label>Any positive number</mat-label>
+          <input matInput greaterThanZero placeholder="Ex. 24.00" [formControl]="gross" (change)="grossUpdated()">
+        </mat-form-field>
+        <div *ngIf="gross.invalid && (gross.dirty || gross.touched)">
+          <mat-error *ngIf="gross.errors?.['greaterThanZero']">
+            Amount must be a positive number.
+          </mat-error>
+        </div>
+        <div *ngIf="
+          (net.invalid && vat.invalid && gross.invalid)
+          && ((net.dirty || net.touched)
+              || (vat.dirty || vat.touched)
+              || (gross.dirty || gross.touched))">
+          <hr>
+          <mat-error>
+            At least one of the amounts needs to be specified.
+          </mat-error>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+    </mat-card-actions>
+  </mat-card>
+</div>
